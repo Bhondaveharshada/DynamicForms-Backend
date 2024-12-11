@@ -1,49 +1,34 @@
 const formModel = require('./form.model')
 const bcrypt = require('bcrypt')
 
-const handleAddUser = async(req,res,next)=>{
-    console.log(req.body.lname)
-    
-  await formModel.findOne({email:req.body.email})
-   .exec()
-   .then(user =>{
-    if(user){
-        return res.status(409).json({
-            message:'Mail Already Exist'
-        })
-    }else{
-        console.log(req.body.password);
+const handleAddForm = async(req,res)=>{
+     
+   try{
+
+    const addform = new formModel.forms({
+        title:req.body.title,
+        question:req.body.question,
+        formId: req.body.formId
+    })
+
+    const result = await addform.save()
+    res.status(201).json({
+        message:"form created",
+        result : result
+    })
+
+
+   } catch(err){
+       res.status(500).json({
+        error: err,
         
-        bcrypt.hash(req.body.password,10,(err,hash)=>{
-            if(err){
-                return res.status(500).json({
-                    error:err
-                })
-            }else{
-                const user = new RegisterUser({
-                    name:req.body.fname,
-                    L_name:req.body.lname,
-                    email:req.body.email,
-                    password: hash,
-                    isAgree:req.body.isAgree
-                });
-                user.save()
-                .then(result=>{
-                    res.status(201).json({
-                        message:'User Created'
-                    })
-                })
-                .catch(err=>{
-                    res.status(500).json({
-                        error:err
-                    })
-                })
-            }
-        })
+       })
+   }
+
     }
-})
-}
+
+
 
 module.exports = {
-    handleAddUser
+    handleAddForm
 }

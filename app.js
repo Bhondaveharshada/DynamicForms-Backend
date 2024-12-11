@@ -36,6 +36,6 @@ app.use((req,res,next)=>{
     
 }) */
 
-app.use('/register',formRoute)
+app.use('/',formRoute)
 
 module.exports = app

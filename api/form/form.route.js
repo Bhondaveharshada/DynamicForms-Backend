@@ -1,9 +1,9 @@
 const express = require('express')
-const {handleAddUser} = require("./form.controller")
+const {handleAddForm} = require("./form.controller")
 const router = express.Router();
 
 
-router.post("/addUser",handleAddUser)
+router.post("/addform",handleAddForm)
 
 
 module.exports = router

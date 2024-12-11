@@ -1,27 +1,46 @@
 const mongoose = require("mongoose")
 
 const formSchema = mongoose.Schema({
-    name:{
+    title:{
         type:String,
         required:true
     },
-    L_name:{
+    question:{
         type:String,
         required:true
     },
-    email:{
-        type:String,
-        required:true,
-        unique:true
-    },
-    password:{
-        type:String,
-        required:true
-    },
-    isAgree:{
-        type:Boolean,
-        default:false
+    formId: {
+        type:Number,
     }
-})
 
-module.exports = mongoose.model("Forms",formSchema)
+});
+
+const forms = mongoose.model("AddForms",formSchema);
+
+
+
+const answerSchema = mongoose.Schema({
+    formId: {
+        type:mongoose.Schema.Types.ObjectId,
+        ref: 'AddForms', // Refers to the formSchema
+    },
+    question: {
+        type:mongoose.Schema.Types.ObjectId,
+        ref: 'AddForms', // Refers to the question within the form
+    },
+    answer: {
+        type: String,
+        required: true,
+    },
+});
+
+const Answers= mongoose.model('Answer', answerSchema);
+
+module.exports = {
+    forms,
+    Answers
+}
+
+
+
+
