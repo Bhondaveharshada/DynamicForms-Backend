@@ -1,17 +1,40 @@
 const mongoose = require("mongoose")
 
+const formFieldsSchema = mongoose.Schema({
+    title: {
+        type: String,
+        required: true
+    },
+    formId:{
+        type: Number,  
+    },
+    additionalFields: [
+        {
+          value: {
+            type: String,
+            required: true
+          }
+        }
+      ]
+});
+
+const formFields = mongoose.model("formFields",formFieldsSchema)
+
+
 const formSchema = mongoose.Schema({
-    title:{
-        type:String,
-        required:true
-    },
-    question:{
-        type:String,
-        required:true
-    },
-    formId: {
-        type:Number,
-    }
+    title: {
+        type: String,
+        required: true
+      },
+  
+      additionalFields: [
+        {
+          value: {
+            type: String,
+            required: true
+          }
+        }
+      ]
 
 });
 
@@ -19,7 +42,7 @@ const forms = mongoose.model("AddForms",formSchema);
 
 
 
-const answerSchema = mongoose.Schema({
+/* const answerSchema = mongoose.Schema({
     formId: {
         type:mongoose.Schema.Types.ObjectId,
         ref: 'AddForms', // Refers to the formSchema
@@ -32,13 +55,13 @@ const answerSchema = mongoose.Schema({
         type: String,
         required: true,
     },
-});
+}); */
 
-const Answers= mongoose.model('Answer', answerSchema);
+//const Answers= mongoose.model('Answer', answerSchema);
 
 module.exports = {
     forms,
-    Answers
+    formFields
 }
 
 
