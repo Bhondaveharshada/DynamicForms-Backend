@@ -6,7 +6,7 @@ const formFieldsSchema = mongoose.Schema({
         required: true
     },
     formId:{
-        type: Number,  
+        type: Number  
     },
     additionalFields: [
         {
