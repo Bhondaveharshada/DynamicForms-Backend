@@ -13,6 +13,10 @@ const formFieldsSchema = mongoose.Schema({
           value: {
             type: String,
             required: true
+          },
+          inputType:{
+            type:String,
+            required:true
           }
         }
       ]
