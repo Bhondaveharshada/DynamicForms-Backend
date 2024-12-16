@@ -36,10 +36,10 @@ const formSchema = mongoose.Schema({
         }
       ],
 
-      fields:[{
+    fields:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'formFields'
-     }]
+    }
 
 });
 
