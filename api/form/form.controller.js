@@ -35,8 +35,8 @@ const handleAddForm = async(req,res)=>{
         // Create a new form document with the provided data
         const newForm = new formModel.forms({
           title: formData.title,
-          additionalFields: formData.additionalFields
-          
+          additionalFields: formData.additionalFields,
+          fields:formData.fieldsId
         })
     
         // Save the form data to MongoDB
