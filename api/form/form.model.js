@@ -20,7 +20,7 @@ const formFieldsSchema = mongoose.Schema({
 
 const formFields = mongoose.model("formFields",formFieldsSchema)
 
-
+//form
 const formSchema = mongoose.Schema({
     title: {
         type: String,
@@ -34,7 +34,12 @@ const formSchema = mongoose.Schema({
             required: true
           }
         }
-      ]
+      ],
+
+      fields:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'formFields'
+     }]
 
 });
 

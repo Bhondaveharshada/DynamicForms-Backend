@@ -54,11 +54,11 @@ const handleAddForm = async(req,res)=>{
 
 
     const handleGetForm = async (req, res) => {
-        const { formId } = req.body; // Extract formId from request body
+        const { id } = req.body; // Extract formId from request body
     
         try {
             // Fetch the form data based on formId
-            const form = await formModel.forms.findOne({ formId });
+            const form = await formModel.forms.findOne(id).populate('fields');
     
             if (!form) {
                 return res.status(404).json({
@@ -78,11 +78,34 @@ const handleAddForm = async(req,res)=>{
             });
         }
     };
+
+    const handleGetFormFields = async (req, res) => {
+      try {
+        const { id } = req.params; 
+    
+       
+        const formFields = await formModel.formFields.findById(id);
+    
+        if (!formFields) {
+          return res.status(404).json({ message: 'Form not found' });
+        }
+    
+        res.status(200).json({
+          message: 'Form fetched successfully',
+          result: formFields
+        });
+      } catch (error) {
+        console.error('Error fetching form:', error);
+        res.status(500).json({ message: 'Failed to fetch form' });
+      }
+    };
+    
     
 
 
 module.exports = {
-    handleAddForm,
-    handleGetForm,
-    handleAddFormFields
+  handleAddForm,
+  handleGetForm,
+  handleAddFormFields,
+  handleGetFormFields
 }
