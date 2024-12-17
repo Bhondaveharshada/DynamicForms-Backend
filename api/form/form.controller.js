@@ -8,13 +8,12 @@ const handleAddFormFields = async(req,res)=>{
             const formData = req.body.data;
             const {formId} = req.body ;
             
-            // Create a new form document with the provided data
             const newForm = new formModel.formFields({
               title: formData.title,
               formId,
               additionalFields: formData.additionalFields
             });
-            // Save the form data to MongoDB
+
             const savedForm = await newForm.save();
             res.status(201).json({
               message: 'Form saved successfully',
@@ -26,20 +25,131 @@ const handleAddFormFields = async(req,res)=>{
           }
         
 }
+
+const handleGetOneFormFields = async (req, res) => {
+  try {
+    const { id } = req.params; 
+
+   
+    const formFields = await formModel.formFields.findById(id);
+
+    if (!formFields) {
+      return res.status(404).json({ message: 'Form not found' });
+    }
+
+    res.status(200).json({
+      message: 'Form fetched successfully',
+      result: formFields
+    });
+  } catch (error) {
+    console.error('Error fetching form:', error);
+    res.status(500).json({ message: 'Failed to fetch form' });
+  }
+};
+
+const handleGetAllFormFields = async (req, res) => {
+  try {
+
+    const allForms = await formModel.formFields.find();
+
+    res.status(200).json({
+      message: 'All forms retrieved successfully',
+      result: allForms
+    });
+  } catch (error) {
+    console.error('Error fetching forms:', error);
+    res.status(500).json({ message: 'Failed to fetch forms' });
+  }
+};
+
+
+const handleUpdateFormFields = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const formData = req.body.data;
+
+  
+    const updatedForm = await formModel.formFields.findByIdAndUpdate(
+      id, 
+      {
+        $set: {
+          title: formData.title,
+          additionalFields: formData.additionalFields
+        }
+      },
+      { new: true }
+    );
+
+    if (!updatedForm) {
+      return res.status(404).json({ message: 'Form not found' });
+    }
+
+    res.status(200).json({
+      message: 'Form updated successfully',
+      result: updatedForm
+    });
+  } catch (error) {
+    console.error('Error updating form:', error);
+    res.status(500).json({ message: 'Failed to update form' });
+  }
+};
+
+
+const savelinktoFormfields = async (req, res) => {
+  const { id } = req.params; // Extract _id from URL
+  const { link } = req.body.formLink; // Extract link from request body
+
+  try {
+    // Find the document and update its formLink field
+    const updatedForm = await formModel.formFields.findByIdAndUpdate(
+      id,
+      { formLink:String(link) },
+      
+      { new: true } // Return the updated document
+    );
+
+    if (!updatedForm) {
+      return res.status(404).json({ message: 'Form not found' });
+    }
+
+    res.status(200).json({
+      message: 'Form link updated successfully',
+      result: updatedForm,
+    });
+  } catch (error) {
+    console.error('Error updating form link:', error);
+    res.status(500).json({ message: 'Failed to update form link' });
+  }
+}
+
+const deleteFormFields = async (req, res) => {
+  try {
+    const { id } = req.params; // Extract ID from the route parameters
+
+    const deletedForm = await formModel.formFields.findByIdAndDelete(id);
+
+    if (!deletedForm) {
+      return res.status(404).json({ message: 'Form not found' });
+    }
+
+    res.status(200).json({ message: 'Form deleted successfully', result: deletedForm });
+  } catch (error) {
+    console.error('Error deleting form:', error);
+    res.status(500).json({ message: 'Failed to delete form' });
+  }
+};
         
     
 const handleAddForm = async(req,res)=>{
     try {
         const formData = req.body;
     
-        // Create a new form document with the provided data
         const newForm = new formModel.forms({
           title: formData.title,
           additionalFields: formData.additionalFields,
           fields:formData.fieldsId
         })
     
-        // Save the form data to MongoDB
         const savedForm = await newForm.save();
         res.status(201).json({
           message: 'Form saved successfully',
@@ -55,10 +165,9 @@ const handleAddForm = async(req,res)=>{
 
 
     const handleGetForm = async (req, res) => {
-        const { id } = req.body; // Extract formId from request body
+        const { id } = req.body; 
     
         try {
-            // Fetch the form data based on formId
             const form = await formModel.forms.findOne(id).populate('fields');
     
             if (!form) {
@@ -67,39 +176,18 @@ const handleAddForm = async(req,res)=>{
                 });
             }
     
-            // Respond with the fetched form data
             res.status(200).json({
                 message: "Form fetched successfully",
                 form,
             });
         } catch (err) {
-            // Handle any errors
             res.status(500).json({
                 error: err.message,
             });
         }
     };
 
-    const handleGetFormFields = async (req, res) => {
-      try {
-        const { id } = req.params; 
-    
-       
-        const formFields = await formModel.formFields.findById(id);
-    
-        if (!formFields) {
-          return res.status(404).json({ message: 'Form not found' });
-        }
-    
-        res.status(200).json({
-          message: 'Form fetched successfully',
-          result: formFields
-        });
-      } catch (error) {
-        console.error('Error fetching form:', error);
-        res.status(500).json({ message: 'Failed to fetch form' });
-      }
-    };
+
     
     
 
@@ -108,5 +196,10 @@ module.exports = {
   handleAddForm,
   handleGetForm,
   handleAddFormFields,
-  handleGetFormFields
+  handleGetOneFormFields,
+  handleGetAllFormFields,
+  handleUpdateFormFields,
+  savelinktoFormfields,
+  deleteFormFields
+
 }

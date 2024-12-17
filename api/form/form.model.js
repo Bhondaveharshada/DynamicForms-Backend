@@ -1,26 +1,40 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
+const { link } = require("./form.route");
 
-const formFieldsSchema = mongoose.Schema({
+const formFieldsSchema = mongoose.Schema(
+  {
     title: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
-    formId:{
-        type: Number  
+    formId: {
+      type: Number,
     },
+    
     additionalFields: [
-        {
-          value: {
-            type: String,
-            required: true
-          },
-          inputType:{
-            type:String,
-            required:true
-          }
-        }
-      ]
-});
+      {
+        value: {
+          type: String,
+          required: true,
+        },
+        inputType: {
+          type: String,
+          required: true,
+        },
+      },
+    ],
+
+    formLink: { type: String, required: false }
+  },
+  {
+    timestamps: true, // Automatically adds createdAt and updatedAt fields
+  }
+);
+
+const formModel = mongoose.model('FormFields', formFieldsSchema);
+
+module.exports = formModel;
+
 
 const formFields = mongoose.model("formFields",formFieldsSchema)
 
