@@ -97,15 +97,14 @@ const handleUpdateFormFields = async (req, res) => {
 
 const savelinktoFormfields = async (req, res) => {
   const { id } = req.params; // Extract _id from URL
-  const { link } = req.body.formLink; // Extract link from request body
+  const { formLink } = req.body; // Extract link from request body
 
   try {
     // Find the document and update its formLink field
     const updatedForm = await formModel.formFields.findByIdAndUpdate(
       id,
-      { formLink:String(link) },
+      { formLink:String(formLink) } 
       
-      { new: true } // Return the updated document
     );
 
     if (!updatedForm) {

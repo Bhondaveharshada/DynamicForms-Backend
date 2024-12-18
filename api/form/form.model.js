@@ -24,7 +24,17 @@ const formFieldsSchema = mongoose.Schema(
       },
     ],
 
-    formLink: { type: String, required: false }
+    formLink: {
+      type: String,
+      required: false, // Optional field
+      validate: {
+        validator: function (v) {
+          // Basic URL validation
+          return /^(http|https):\/\/[^ "]+$/.test(v);
+        },
+        message: (props) => `${props.value} is not a valid link!`,
+      },
+    },
   },
   {
     timestamps: true, // Automatically adds createdAt and updatedAt fields
