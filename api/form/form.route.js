@@ -1,10 +1,10 @@
 const express = require('express')
-const { handleAddFormFields, handleAddForm, handleGetForm, handleGetAllFormFields, handleUpdateFormFields, savelinktoFormfields, deleteFormFields, handleGetOneFormFields} = require("./form.controller")
+const { handleAddFormFields, handleAddForm, handleGetAllFormFields, handleUpdateFormFields, savelinktoFormfields, deleteFormFields, handleGetOneFormFields, handleGetUserForm} = require("./form.controller")
 const router = express.Router();
 
 
 router.post("/addform",handleAddForm)
-router.get('/getForm',handleGetForm) 
+router.get('/getUserForm/:id',handleGetUserForm) 
 router.post('/addformfields',handleAddFormFields);
 router.get('/getallformsFields',handleGetAllFormFields)
 router.patch('/updateFormFields/:id',handleUpdateFormFields)

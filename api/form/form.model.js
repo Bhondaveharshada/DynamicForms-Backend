@@ -21,6 +21,9 @@ const formFieldsSchema = mongoose.Schema(
           type: String,
           required: true,
         },
+        isrequired:{
+          type:String,
+        }
       },
     ],
 
@@ -40,10 +43,6 @@ const formFieldsSchema = mongoose.Schema(
     timestamps: true, // Automatically adds createdAt and updatedAt fields
   }
 );
-
-const formModel = mongoose.model('FormFields', formFieldsSchema);
-
-module.exports = formModel;
 
 
 const formFields = mongoose.model("formFields",formFieldsSchema)
