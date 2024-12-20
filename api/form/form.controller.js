@@ -1,5 +1,6 @@
 const formModel = require('./form.model')
 const bcrypt = require('bcrypt')
+const mongoose = require('mongoose');
 
 
 const handleAddFormFields = async(req,res)=>{
@@ -183,7 +184,29 @@ const handleGetUserForm = async(req,res)=>{
 }
 
 
+const handleGetAllUserForms = async(req,res)=>{
+  try {
+     const {id}= req.params
+     console.log('fieldId:', id);
 
+     const [allUserForms, Fields] = await Promise.all([
+      formModel.forms.find({ fields: id }),
+      formModel.formFields.findById(id)
+    ]);
+
+   
+
+
+    res.status(200).json({
+      message: 'All Userforms retrieved successfully',
+      result: allUserForms,
+      Fields:Fields
+    });
+  } catch (error) {
+    console.error('Error fetching forms:', error);
+    res.status(500).json({ message: 'Failed to fetch forms' });
+  }
+}
     
     
 
@@ -196,6 +219,7 @@ module.exports = {
   handleGetAllFormFields,
   handleUpdateFormFields,
   savelinktoFormfields,
-  deleteFormFields
+  deleteFormFields,
+  handleGetAllUserForms
 
 }
