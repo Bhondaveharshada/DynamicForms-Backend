@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const { link } = require("./form.route");
 
+
+
 const formFieldsSchema = mongoose.Schema(
   {
     title: {
@@ -23,10 +25,16 @@ const formFieldsSchema = mongoose.Schema(
         },
         isrequired:{
           type:String,
-        }
+        },
+        checkboxOptions: {
+          type: [String], // Array of strings to store checkbox values
+          required: function () {
+            return this.inputType === 'checkbox'; // Required only if inputType is 'checkbox'
+          },
+        
+        },
       },
     ],
-
     formLink: {
       type: String,
       required: false, // Optional field
@@ -40,8 +48,9 @@ const formFieldsSchema = mongoose.Schema(
     },
   },
   {
-    timestamps: true, // Automatically adds createdAt and updatedAt fields
+    timestamps: true, 
   }
+    
 );
 
 

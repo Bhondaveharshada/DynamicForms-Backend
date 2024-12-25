@@ -3,29 +3,38 @@ const bcrypt = require('bcrypt')
 const mongoose = require('mongoose');
 
 
-const handleAddFormFields = async(req,res)=>{
+const handleAddFormFields = async (req, res) => {
+  try {
+    const formData = req.body.data;
+    console.log("Form Data:", formData);
 
-        try {
-            const formData = req.body.data;
-            const {formId} = req.body ;
-            
-            const newForm = new formModel.formFields({
-              title: formData.title,
-              formId,
-              additionalFields: formData.additionalFields
-            });
+    const { formId } = req.body;
+    
+    // Iterate over the additionalFields to check if checkboxOptions should be an empty array
+    formData.additionalFields.forEach(field => {
+      // Check if the field type is 'checkbox' and ensure checkboxOptions is defined as an empty array if not provided
+      if (field.inputType === 'checkbox' && !Array.isArray(field.checkboxOptions)) {
+        field.checkboxOptions = [];
+      }
+    });
 
-            const savedForm = await newForm.save();
-            res.status(201).json({
-              message: 'Form saved successfully',
-              result: savedForm
-            });
-          } catch (error) {
-            console.error('Error saving form:', error);
-            res.status(500).json({ message: 'Failed to save form' });
-          }
-        
-}
+    const newForm = new formModel.formFields({
+      title: formData.title,
+      formId,
+      additionalFields: formData.additionalFields
+    });
+
+    const savedForm = await newForm.save();
+    res.status(201).json({
+      message: 'Form saved successfully',
+      result: savedForm
+    });
+  } catch (error) {
+    console.error('Error saving form:', error);
+    res.status(500).json({ message: 'Failed to save form' });
+  }
+};
+
 
 const handleGetOneFormFields = async (req, res) => {
   try {
