@@ -67,7 +67,7 @@ const formSchema = mongoose.Schema({
         {
           value: {
             type: String,
-            required: true
+            
           }
         }
       ],
