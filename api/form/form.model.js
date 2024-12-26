@@ -31,9 +31,15 @@ const formFieldsSchema = mongoose.Schema(
           required: function () {
             return this.inputType === 'checkbox'; // Required only if inputType is 'checkbox'
           },
-        
-        },
       },
+      radioButtonOptions: {
+        type: [String], // Array of strings to store checkbox values
+        required: function () {
+          return this.inputType === 'radio'; // Required only if inputType is 'checkbox'
+        },
+    
+    },
+    }
     ],
     formLink: {
       type: String,
