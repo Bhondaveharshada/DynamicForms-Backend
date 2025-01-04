@@ -16,11 +16,11 @@ const handleAddFormFields = async (req, res) => {
       console.log('Checkbox Options:', field.checkboxOptions);
       console.log('Radio Button Options:', field.radioButtonOptions);
     
-      if (field.inputType === 'checkbox' && !Array.isArray(field.checkboxOptions)) {
+/*       if (field.inputType === 'checkbox' && !Array.isArray(field.checkboxOptions)) {
         field.checkboxOptions = [];
       } else if (field.inputType === 'radio' && !Array.isArray(field.radioButtonOptions)) {
         field.radioButtonOptions = [];
-      }
+      } */
     });
     
     const newForm = new formModel.formFields({

@@ -24,22 +24,24 @@ const formFieldsSchema = mongoose.Schema(
           required: true,
         },
         isrequired:{
-          type:String,
+          type: Boolean,
+          default: false,
+
         },
-        checkboxOptions: {
-          type: [String], // Array of strings to store checkbox values
-          required: function () {
-            return this.inputType === 'checkbox'; // Required only if inputType is 'checkbox'
+        options: {
+          type: [String], // Array of strings for checkbox and radio options
+          validate: {
+            validator: function (v) {
+              // Ensure options are provided if the field type is checkbox or radio
+              if (this.type === 'checkbox' || this.type === 'radio') {
+                return v && v.length > 0;
+              }
+              return true;
+            },
+            message: 'Options are required for checkbox and radio fields.',
           },
-      },
-      radioButtonOptions: {
-        type: [String], // Array of strings to store checkbox values
-        required: function () {
-          return this.inputType === 'radio'; // Required only if inputType is 'checkbox'
         },
-    
-    },
-    }
+      },
     ],
     formLink: {
       type: String,
