@@ -15,7 +15,7 @@ const formFieldsSchema = mongoose.Schema(
     
     additionalFields: [
       {
-        value: {
+        label: {
           type: String,
           required: true,
         },
@@ -76,6 +76,13 @@ const formSchema = mongoose.Schema({
           value: {
             type: mongoose.Schema.Types.Mixed,
             
+          },
+          inputType: {
+            type: String,
+            
+          },
+          label:{
+            type:String
           }
         }
       ],

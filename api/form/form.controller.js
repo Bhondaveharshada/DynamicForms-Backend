@@ -10,18 +10,7 @@ const handleAddFormFields = async (req, res) => {
 
     const { formId } = req.body;
     
-    // Iterate over the additionalFields to check if checkboxOptions should be an empty array
-    formData.additionalFields.forEach(field => {
-      console.log('Field Type:', field.inputType);
-      console.log('Checkbox Options:', field.checkboxOptions);
-      console.log('Radio Button Options:', field.radioButtonOptions);
-    
-/*       if (field.inputType === 'checkbox' && !Array.isArray(field.checkboxOptions)) {
-        field.checkboxOptions = [];
-      } else if (field.inputType === 'radio' && !Array.isArray(field.radioButtonOptions)) {
-        field.radioButtonOptions = [];
-      } */
-    });
+ 
     
     const newForm = new formModel.formFields({
       title: formData.title,
@@ -157,6 +146,8 @@ const deleteFormFields = async (req, res) => {
 const handleAddForm = async(req,res)=>{
     try {
         const formData = req.body;
+        console.log("formData",formData);
+        
     
         const newForm = new formModel.forms({
           title: formData.title,
