@@ -212,6 +212,20 @@ const handleGetAllUserForms = async(req,res)=>{
     res.status(500).json({ message: 'Failed to fetch forms' });
   }
 }
+
+const handleDeleteUserForm  = async (req,res)=>{
+  try {
+    const { id } = req.params;
+    const deletedForm = await formModel.forms.findByIdAndDelete(id); // Delete by ID
+    if (!deletedForm) {
+      return res.status(404).json({ message: 'Entry not found' });
+    }
+    res.status(200).json({ message: 'Entry deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting entry:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+}
     
     
 
@@ -225,6 +239,6 @@ module.exports = {
   handleUpdateFormFields,
   savelinktoFormfields,
   deleteFormFields,
-  handleGetAllUserForms
-
+  handleGetAllUserForms,
+  handleDeleteUserForm
 }

@@ -1,5 +1,5 @@
 const express = require('express')
-const { handleAddFormFields, handleAddForm, handleGetAllFormFields, handleUpdateFormFields, savelinktoFormfields, deleteFormFields, handleGetOneFormFields, handleGetUserForm, handleGetAllUserForms} = require("./form.controller")
+const { handleAddFormFields, handleAddForm, handleGetAllFormFields, handleUpdateFormFields, savelinktoFormfields, deleteFormFields, handleGetOneFormFields, handleGetUserForm, handleGetAllUserForms, handleDeleteUserForm} = require("./form.controller")
 const router = express.Router();
 
 
@@ -12,4 +12,5 @@ router.patch('/updateFormFields/:id',handleUpdateFormFields)
 router.get('/getformfields/:id', handleGetOneFormFields);
 router.put('/savelinktoFormFields/:id',savelinktoFormfields)
 router.delete('/deleteformfields/:id',deleteFormFields)
+router.delete('/deleteUserForm/:id',handleDeleteUserForm)
 module.exports = router
