@@ -151,6 +151,9 @@ const handleAddForm = async(req,res)=>{
     
         const newForm = new formModel.forms({
           title: formData.title,
+          patientId: formData.patientId,
+          timepointId: formData.timepointId,  
+          formId: formData.formId,
           additionalFields: formData.additionalFields,
           fields:formData.fieldsId
         })

@@ -66,32 +66,47 @@ const formFields = mongoose.model("formFields",formFieldsSchema)
 
 //form
 const formSchema = mongoose.Schema({
-    title: {
-        type: String,
-        required: true
+  title: {
+    type: String,
+    required: true
+  },
+  patientId: {
+    type: String, // Added patientId as a string
+    required: true
+  },
+  timepointId: {
+    type: String, // Added timepointId as a string
+    required: true
+  },
+  formId: {
+    type: String,
+    required: true 
+  },
+  additionalFields: [
+    {
+      value: {
+        type: mongoose.Schema.Types.Mixed
       },
-  
-      additionalFields: [
-        {
-          value: {
-            type: mongoose.Schema.Types.Mixed,
-            
-          },
-          inputType: {
-            type: String,
-            
-          },
-          label:{
-            type:String
-          }
-        }
-      ],
-
-    fields:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'formFields'
+      inputType: {
+        type: String
+      },
+      label: {
+        type: String
+      }
     }
-
+  ],
+  fields: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'formFields'
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now, // Automatically set the creation date
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now, // Automatically set the update date
+  },
 });
 
 const forms = mongoose.model("AddForms",formSchema);
