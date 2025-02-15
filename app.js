@@ -2,6 +2,8 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser")
 const formRoute= require("./api/form/form.route")
+const patientRoutes = require("./api/patient/route")
+const timepointRoutes = require("./api/timepoint/route")
 require('dotenv').config()
 const cors = require('cors')
 const app = express();
@@ -36,6 +38,8 @@ app.use((req,res,next)=>{
     
 }) */
 
-app.use('/',formRoute)
+app.use('/',formRoute);
+app.use('/patient', patientRoutes);
+app.use('/timepoint',timepointRoutes);
 
 module.exports = app
