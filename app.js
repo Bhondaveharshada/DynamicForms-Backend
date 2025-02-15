@@ -4,6 +4,7 @@ const bodyParser = require("body-parser")
 const formRoute= require("./api/form/form.route")
 const patientRoutes = require("./api/patient/route")
 const timepointRoutes = require("./api/timepoint/route")
+const relationRoutes = require("./api/relation/route")
 require('dotenv').config()
 const cors = require('cors')
 const app = express();
@@ -41,5 +42,6 @@ app.use((req,res,next)=>{
 app.use('/',formRoute);
 app.use('/patient', patientRoutes);
 app.use('/timepoint',timepointRoutes);
+app.use('/relation',relationRoutes)
 
 module.exports = app

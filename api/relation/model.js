@@ -1,7 +1,17 @@
 const mongoose = require('mongoose');
 
-const relationSchema = new mongoose.Schema(
-
+const RelationSchema = new mongoose.Schema(
+  {
+    formId: {
+      type: String,
+      required: true,
+    },
+    timepoints: {
+      type: [String], // Array of timepoint IDs
+      default: [],
+    },
+  },
+  { timestamps: true }
 );
 
-module.exports = mongoose.model('Relation', relationSchema);
+module.exports = mongoose.model('Relation', RelationSchema);
