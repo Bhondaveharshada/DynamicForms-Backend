@@ -7,6 +7,7 @@ const patientSchema = new mongoose.Schema({
   email: { type: String, required: true },
   phone: { type: String, required: true },
   birthdate: { type: Date, required: true },
+  onboardDate: { type: Date, default: Date.now }, // New field with default value as current date
 });
 
 // Define a separate schema for maintaining a sequence counter
