@@ -230,7 +230,81 @@ const handleDeleteUserForm  = async (req,res)=>{
   }
 }
     
+const getSubmittedForms = async (req, res) => {
+  const { patientId, timepointId, formId } = req.query;
+  console.log("Payload : ", req.query);
+  
+  try {
+    const form = await formModel.forms.findOne({ patientId, timepointId, formId });
+    if (form) {
+      res.status(200).json({ result: form });
+    } else {
+      res.status(404).json({ message: 'Form not found' });
+    }
+  } catch (error) {
+    console.log({ message: 'Error fetching form', error });
     
+    res.status(500).json({ message: 'Error fetching form', error });
+  }
+};
+
+const getAllSubmittedForms = async (req, res) => {
+  const patientId = req.params.patientId;
+
+  // Validate patientId
+  if (!patientId) {
+    return res.status(400).json({
+      success: false,
+      message: 'Patient ID is required',
+    });
+  }
+
+  try {
+    // Query the forms collection for the given patientId
+    const forms = await formModel.forms.find({ patientId });
+
+    if (forms && forms.length > 0) {
+      res.status(200).json({
+        success: true,
+        data: forms,
+      });
+    } else {
+      res.status(404).json({
+        success: false,
+        message: 'No forms found for the given patient ID',
+      });
+    }
+  } catch (error) {
+    console.error('Error fetching forms:', error);
+
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error while fetching forms',
+      error: error.message,
+    });
+  }
+};
+
+
+const updateSubmittedForms = async (req, res) => {
+  const { patientId, timepointId, formId } = req.body;
+  console.log("Payload : ", req.body);
+
+  const  existingResponse = await formModel.forms.findOne({patientId, timepointId, formId});
+  console.log("Existing Response : ", existingResponse);
+  
+  if(existingResponse) {
+    existingResponse.additionalFields = req.body.additionalFields;
+    existingResponse.save();
+
+    return res.status(201).json({
+      message: 'Response Updated successfully!',
+    });
+  } else {
+    res.status(404).json({ message: 'Response not found' });
+  }
+}
+
 
 
 module.exports = {
@@ -243,5 +317,8 @@ module.exports = {
   savelinktoFormfields,
   deleteFormFields,
   handleGetAllUserForms,
-  handleDeleteUserForm
+  handleDeleteUserForm,
+  getSubmittedForms,
+  updateSubmittedForms,
+  getAllSubmittedForms
 }
