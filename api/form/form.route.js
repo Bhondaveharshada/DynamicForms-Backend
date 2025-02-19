@@ -1,8 +1,10 @@
 const express = require('express')
-const { handleAddFormFields, handleAddForm, handleGetAllFormFields, handleUpdateFormFields, savelinktoFormfields, deleteFormFields, handleGetOneFormFields, handleGetUserForm, handleGetAllUserForms, handleDeleteUserForm} = require("./form.controller")
+const { getAllSubmittedForms, updateSubmittedForms, getSubmittedForms, handleAddFormFields, handleAddForm, handleGetAllFormFields, handleUpdateFormFields, savelinktoFormfields, deleteFormFields, handleGetOneFormFields, handleGetUserForm, handleGetAllUserForms, handleDeleteUserForm} = require("./form.controller")
 const router = express.Router();
 
-
+router.get('/submitted', getSubmittedForms)
+router.post('/update', updateSubmittedForms)
+router.get('/allResponses/:patientId', getAllSubmittedForms)
 router.post("/addform",handleAddForm)
 router.get('/getUserForm/:id',handleGetUserForm) 
 router.get('/getallUserForms/:id',handleGetAllUserForms)
