@@ -6,6 +6,7 @@ const patientRoutes = require("./api/patient/route")
 const timepointRoutes = require("./api/timepoint/route")
 const relationRoutes = require("./api/relation/route")
 const openaiRoutes = require("./api/openAI/route")
+const emailRoutes = require("./api/Email/route")
 require('dotenv').config()
 const cors = require('cors')
 const app = express();
@@ -45,5 +46,6 @@ app.use('/patient', patientRoutes);
 app.use('/timepoint',timepointRoutes);
 app.use('/relation',relationRoutes)
 app.use('/openai', openaiRoutes);
+app.use('/email', emailRoutes);
 
 module.exports = app
