@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 const handleAddFormFields = async (req, res) => {
   try {
     const formData = req.body.data;
-    console.log("Form Data:", formData);
+    console.log("Form Data:", JSON.stringify(formData));
 
     const { formId } = req.body;
     
