@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const { link } = require("./form.route");
 
 
 
@@ -15,32 +14,35 @@ const formFieldsSchema = mongoose.Schema(
     
     additionalFields: [
       {
-        label: {
-          type: String,
-          required: true,
-        },
-        inputType: {
-          type: String,
-          required: true,
-        },
-        isrequired:{
-          type: Boolean,
-          default: false,
-
-        },
-        options: {
-          type: [String], // Array of strings for checkbox and radio options
-          validate: {
-            validator: function (v) {
-              // Ensure options are provided if the field type is checkbox or radio
-              if (this.type === 'checkbox' || this.type === 'radio') {
-                return v && v.length > 0;
-              }
-              return true;
+        fields: [
+          {
+            label: {
+              type: String,
+              required: true,
             },
-            message: 'Options are required for checkbox and radio fields.',
+            inputType: {
+              type: String,
+              required: true,
+            },
+            isrequired: {
+              type: Boolean,
+              default: false,
+            },
+            options: {
+              type: [String], // Array of strings for checkbox and radio options
+              validate: {
+                validator: function (v) {
+                  // Ensure options are provided if the field type is checkbox or radio
+                  if (this.inputType === 'checkbox' || this.inputType === 'radio') {
+                    return v && v.length > 0;
+                  }
+                  return true;
+                },
+                message: 'Options are required for checkbox and radio fields.',
+              },
+            },
           },
-        },
+        ],
       },
     ],
     formLink: {
@@ -58,11 +60,9 @@ const formFieldsSchema = mongoose.Schema(
   {
     timestamps: true, 
   }
-    
 );
 
-
-const formFields = mongoose.model("formFields",formFieldsSchema)
+const formFields = mongoose.model("formFields", formFieldsSchema);
 
 //form
 const formSchema = mongoose.Schema({
