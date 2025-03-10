@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 const handleAddFormFields = async (req, res) => {
   try {
     const formData = req.body.data;
-    console.log("Form Data:", formData);
+    console.log("Form Data:", JSON.stringify(formData));
 
     const { formId } = req.body;
     
@@ -146,7 +146,7 @@ const deleteFormFields = async (req, res) => {
 const handleAddForm = async(req,res)=>{
     try {
         const formData = req.body;
-        console.log("formData",formData);
+        console.log("formData response", JSON.stringify(formData));
         
     
         const newForm = new formModel.forms({
