@@ -84,15 +84,21 @@ const formSchema = mongoose.Schema({
   },
   additionalFields: [
     {
-      value: {
-        type: mongoose.Schema.Types.Mixed
-      },
-      inputType: {
-        type: String
-      },
-      label: {
-        type: String
-      }
+      fields: [
+        {
+          label: {
+            type: String,
+            required: true,
+          },
+          value: {
+            type: mongoose.Schema.Types.Mixed
+          },
+          inputType: {
+            type: String,
+            required: true,
+          },
+        },
+      ],
     }
   ],
   fields: {

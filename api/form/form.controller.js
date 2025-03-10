@@ -146,7 +146,7 @@ const deleteFormFields = async (req, res) => {
 const handleAddForm = async(req,res)=>{
     try {
         const formData = req.body;
-        console.log("formData",formData);
+        console.log("formData response", JSON.stringify(formData));
         
     
         const newForm = new formModel.forms({
