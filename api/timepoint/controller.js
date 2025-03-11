@@ -1,16 +1,12 @@
 const { Timepoint } = require('./model');
 
-// Helper function to map `_id` to `id` for responses
 const mapId = (doc) => {
-  return { id: doc.id, ...doc._doc }; // `doc.id` is the custom sequential ID
+  return { id: doc.id, ...doc._doc };
 };
 
-// Create a new interval
 exports.createInterval = async (req, res) => {
   try {
     const { name, interval } = req.body;
-
-    // Validation
     if (!name) {
       return res.status(400).json({ message: 'Name and interval are required.' });
     }
@@ -22,18 +18,16 @@ exports.createInterval = async (req, res) => {
   }
 };
 
-// Get all intervals
 exports.getAllIntervals = async (req, res) => {
   try {
     const intervals = await Timepoint.find();
-    const mappedIntervals = intervals.map(mapId); // Map custom id
+    const mappedIntervals = intervals.map(mapId);
     res.status(200).json(mappedIntervals);
   } catch (error) {
     res.status(500).json({ message: 'Error fetching intervals', error });
   }
 };
 
-// Get a single interval by ID
 exports.getIntervalById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -49,7 +43,6 @@ exports.getIntervalById = async (req, res) => {
   }
 };
 
-// Update an interval
 exports.updateInterval = async (req, res) => {
   try {
     const { id } = req.params;
