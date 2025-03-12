@@ -35,11 +35,10 @@ app.use((req,res,next)=>{
  next()
 })
 
-/* app.use("/health",(req,res)=>{
-    console.log("backend succesful");
-    
-    
-}) */
+app.get("/health",(req,res)=>{
+    console.log("backend succesful"); 
+    res.status(200).json({ message: 'Server is running' });
+})
 
 app.use('/',formRoute);
 app.use('/patient', patientRoutes);
