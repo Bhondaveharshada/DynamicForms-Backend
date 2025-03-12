@@ -5,7 +5,7 @@ exports.createPatient = async (req, res) => {
   try {
     console.log("Creating new patient");
     
-    const newPatient = new Patient(req.body); // ID will auto-generate
+    const newPatient = new Patient(req.body);
     const savedPatient = await newPatient.save();
     console.log("Created new patient");
     

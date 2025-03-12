@@ -16,6 +16,10 @@ const formFieldsSchema = mongoose.Schema(
       {
         fields: [
           {
+            id: {  
+              type: String,
+              required: true,
+            },
             label: {
               type: String,
               required: true,
@@ -27,6 +31,10 @@ const formFieldsSchema = mongoose.Schema(
             isrequired: {
               type: Boolean,
               default: false,
+            },
+            allowMultipleSelection:{
+              type:Boolean,
+              default:false
             },
             options: {
               type: [String], // Array of strings for checkbox and radio options
@@ -62,10 +70,10 @@ const formFieldsSchema = mongoose.Schema(
   }
 );
 
-const formFields = mongoose.model("formFields", formFieldsSchema);
+const formFields = mongoose.model("forms", formFieldsSchema);
 
 //form
-const formSchema = mongoose.Schema({
+const formResponseSchema = mongoose.Schema({
   title: {
     type: String,
     required: true
@@ -86,6 +94,10 @@ const formSchema = mongoose.Schema({
     {
       fields: [
         {
+          id: {  
+            type: String,
+            required: true,
+          },
           label: {
             type: String,
             required: true,
@@ -103,7 +115,7 @@ const formSchema = mongoose.Schema({
   ],
   fields: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'formFields'
+    ref: 'forms'
   },
   createdAt: {
     type: Date,
@@ -115,29 +127,10 @@ const formSchema = mongoose.Schema({
   },
 });
 
-const forms = mongoose.model("AddForms",formSchema);
-
-
-
-/* const answerSchema = mongoose.Schema({
-    formId: {
-        type:mongoose.Schema.Types.ObjectId,
-        ref: 'AddForms', // Refers to the formSchema
-    },
-    question: {
-        type:mongoose.Schema.Types.ObjectId,
-        ref: 'AddForms', // Refers to the question within the form
-    },
-    answer: {
-        type: String,
-        required: true,
-    },
-}); */
-
-//const Answers= mongoose.model('Answer', answerSchema);
+const formResponse = mongoose.model("From_Response",formResponseSchema);
 
 module.exports = {
-    forms,
+    formResponse,
     formFields
 }
 

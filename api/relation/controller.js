@@ -8,7 +8,6 @@ exports.storeRelations = async (req, res) => {
     const savedRelations = [];
     const errors = [];
 
-    // Loop through each relation
     for (const relation of relations) {
       const { formId, timepoints } = relation;
 
@@ -17,7 +16,7 @@ exports.storeRelations = async (req, res) => {
 
       if (existingRelation) {
         // If the formId exists, update the timepoints
-        existingRelation.timepoints = timepoints; // Overwrite with the new timepoints
+        existingRelation.timepoints = timepoints; 
         await existingRelation.save();
         savedRelations.push(existingRelation);
       } else {
@@ -35,7 +34,7 @@ exports.storeRelations = async (req, res) => {
     return res.status(201).json({
       message: 'Relations processed successfully!',
       data: savedRelations,
-      errors, // Include errors if any occurred
+      errors,
     });
   } catch (error) {
     return res.status(500).json({ message: 'Error processing relations', error });
@@ -52,7 +51,7 @@ exports.updateRelation = async (req, res) => {
     const updatedRelation = await Relation.findOneAndUpdate(
       { formId },
       { timepoints },
-      { new: true, upsert: true } // Update if found, otherwise insert
+      { new: true, upsert: true }
     );
 
     return res.status(200).json({ message: 'Relation updated successfully!', data: updatedRelation });
