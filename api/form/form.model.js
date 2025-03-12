@@ -16,6 +16,10 @@ const formFieldsSchema = mongoose.Schema(
       {
         fields: [
           {
+            id: {  
+              type: String,
+              required: true,
+            },
             label: {
               type: String,
               required: true,
@@ -27,6 +31,10 @@ const formFieldsSchema = mongoose.Schema(
             isrequired: {
               type: Boolean,
               default: false,
+            },
+            allowMultipleSelection:{
+              type:Boolean,
+              default:false
             },
             options: {
               type: [String], // Array of strings for checkbox and radio options
@@ -86,6 +94,10 @@ const formResponseSchema = mongoose.Schema({
     {
       fields: [
         {
+          id: {  
+            type: String,
+            required: true,
+          },
           label: {
             type: String,
             required: true,

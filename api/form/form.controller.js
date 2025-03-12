@@ -9,8 +9,11 @@ const createForm = async (req, res) => {
       formId,
       data: { title, additionalFields },
     } = req.body;
+    
+    // Log the data being received
     console.log("Form Data:", JSON.stringify({ title, additionalFields }));
 
+    // No changes needed here as the frontend should send field IDs
     const savedForm = await new formModel.formFields({
       title,
       formId,
@@ -124,12 +127,26 @@ const saveResponse = async (req, res) => {
     const { title, patientId, timepointId, formId, additionalFields, fieldsId } = req.body;
     console.log("formData response", JSON.stringify({ title, patientId, timepointId, formId, additionalFields, fieldsId }));
 
+    // Ensure each field in additionalFields has an ID
+    // This is important if your frontend code might send responses without IDs
+    const processedAdditionalFields = additionalFields.map(row => {
+      return {
+        fields: row.fields.map(field => {
+          // If field doesn't have an ID (for backward compatibility)
+          if (!field.id) {
+            field.id = `field_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
+          }
+          return field;
+        })
+      };
+    });
+
     const savedResponse = await new formModel.formResponse({
       title,
       patientId,
       timepointId,
-      formId,
-      additionalFields,
+      formId, 
+      additionalFields: processedAdditionalFields,
       fields: fieldsId
     }).save();
 
@@ -256,15 +273,28 @@ const getAllSubmittedForms = async (req, res) => {
 
 
 const updateSubmittedForms = async (req, res) => {
-  const { patientId, timepointId, formId } = req.body;
+  const { patientId, timepointId, formId, additionalFields } = req.body;
   console.log("Payload : ", req.body);
 
-  const  existingResponse = await formModel.formResponse.findOne({patientId, timepointId, formId});
+  // Process the additionalFields to ensure all fields have IDs
+  const processedAdditionalFields = additionalFields.map(row => {
+    return {
+      fields: row.fields.map(field => {
+        // If field doesn't have an ID (for backward compatibility)
+        if (!field.id) {
+          field.id = `field_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
+        }
+        return field;
+      })
+    };
+  });
+
+  const existingResponse = await formModel.formResponse.findOne({patientId, timepointId, formId});
   console.log("Existing Response : ", existingResponse);
   
   if(existingResponse) {
-    existingResponse.additionalFields = req.body.additionalFields;
-    existingResponse.save();
+    existingResponse.additionalFields = processedAdditionalFields;
+    await existingResponse.save();
 
     return res.status(201).json({
       message: 'Response Updated successfully!',
