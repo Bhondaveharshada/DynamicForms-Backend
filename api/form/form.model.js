@@ -32,6 +32,13 @@ const formFieldsSchema = mongoose.Schema(
               type: Boolean,
               default: false,
             },
+            validateNumber: {
+              type: Boolean,
+              default: false,
+            },
+            numberValidation: {
+              type: String,
+            },
             allowMultipleSelection:{
               type:Boolean,
               default:false
