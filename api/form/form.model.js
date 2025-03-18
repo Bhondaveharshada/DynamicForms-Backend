@@ -36,6 +36,10 @@ const formFieldsSchema = mongoose.Schema(
               type: Boolean,
               default: false,
             },
+            softValidation: {
+              type: Boolean,
+              default: false,
+            },  
             numberValidation: {
               type: String,
             },
