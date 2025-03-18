@@ -47,6 +47,15 @@ const formFieldsSchema = mongoose.Schema(
               type:Boolean,
               default:false
             },
+             // Add these two new properties for visibility conditions
+             hasVisibilityCondition: {
+              type: Boolean,
+              default: false
+            },
+            visibilityCondition: {
+              type: String,
+              default: null
+            },
             options: {
               type: [String], // Array of strings for checkbox and radio options
               validate: {
@@ -120,6 +129,15 @@ const formResponseSchema = mongoose.Schema({
             type: String,
             required: true,
           },
+             // Add these for consistency when displaying filled forms
+             hasVisibilityCondition: {
+              type: Boolean,
+              default: false
+            },
+            visibilityCondition: {
+              type: String,
+              default: null
+            }
         },
       ],
     }
