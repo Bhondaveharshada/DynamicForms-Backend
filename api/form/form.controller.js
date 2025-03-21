@@ -64,11 +64,24 @@ const getAllForms = async (req, res) => {
 const updateForm = async (req, res) => {
   try {
     const { id } = req.params;
+    // Extract data from req.body.data
     const { title, additionalFields } = req.body.data;
+
+    const processedAdditionalFields = additionalFields.map(row => {
+      return {
+        fields: row.fields.map(field => {
+          // Create a new object with both required and isrequired
+          return {
+            ...field,
+            isrequired: field.required !== undefined ? field.required : field.isrequired
+          };
+        })
+      };
+    });
 
     const updatedForm = await formModel.formFields.findByIdAndUpdate(
       id, 
-      { $set: { title, additionalFields } },
+      { $set: { title, additionalFields: processedAdditionalFields } },
       { new: true }
     );
 
@@ -79,9 +92,10 @@ const updateForm = async (req, res) => {
     res.status(200).json({ message: 'Form updated successfully', result: updatedForm });
   } catch (error) {
     console.error('Error updating form:', error);
-    res.status(500).json({ message: 'Failed to update form' });
+    res.status(500).json({ message: 'Failed to update form', error: error.message });
   }
 };
+
 
 const saveLinkToForm = async (req, res) => {
   try {
@@ -276,7 +290,7 @@ const updateSubmittedForms = async (req, res) => {
   const { patientId, timepointId, formId, additionalFields } = req.body;
   console.log("Payload : ", req.body);
 
-  // Process the additionalFields to ensure all fields have IDs
+  // Process the additionalFields to ensure all fields have IDs and required is preserved
   const processedAdditionalFields = additionalFields.map(row => {
     return {
       fields: row.fields.map(field => {
@@ -284,15 +298,19 @@ const updateSubmittedForms = async (req, res) => {
         if (!field.id) {
           field.id = `field_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
         }
+        // Ensure the required property is preserved
+        if (field.isrequired !== undefined) {
+          field.required = field.isrequired; // Map isrequired to required
+        }
         return field;
       })
     };
   });
 
-  const existingResponse = await formModel.formResponse.findOne({patientId, timepointId, formId});
+  const existingResponse = await formModel.formResponse.findOne({ patientId, timepointId, formId });
   console.log("Existing Response : ", existingResponse);
-  
-  if(existingResponse) {
+
+  if (existingResponse) {
     existingResponse.additionalFields = processedAdditionalFields;
     await existingResponse.save();
 
@@ -302,7 +320,7 @@ const updateSubmittedForms = async (req, res) => {
   } else {
     res.status(404).json({ message: 'Response not found' });
   }
-}
+};
 
 
 
