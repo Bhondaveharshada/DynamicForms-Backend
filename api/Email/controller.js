@@ -1,37 +1,49 @@
 const sgMail = require('@sendgrid/mail');
 require('dotenv').config();
-const { Patient } = require('../patient/model'); // Import your Patient model
+const { Patient } = require('../patient/model'); 
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 exports.FormSubmittedEmail = async (req, res) => {
     try {
-        const { id, name, formName, formData, email } = req.body.data; // Add email to destructuring
+        const { id, name, formName, formData, pdfAttachment } = req.body.data;
 
-        // If email is not provided in the payload, fetch it from database
-        let recipientEmail = email;
-        if (!recipientEmail) {
-            const patient = await Patient.findOne({ id: parseInt(id) });
-            if (!patient || !patient.email) {
-                return res.status(404).json({ error: 'Patient email not found' });
-            }
-            recipientEmail = patient.email;
+        // Fetch patient email from database using id
+        const patient = await Patient.findOne({ id: parseInt(id) });
+        if (!patient || !patient.email) {
+            return res.status(404).json({ error: 'Patient email not found' });
         }
-
-        // Format formData dynamically
-        let formattedFormData = formData.map(field => {
-            return `<strong>${field.label}:</strong> ${field.value} <br>`;
-        }).join("\n");
+        const recipientEmail = patient.email;
 
         const senderEmail = process.env.SENDER_EMAIL || 'aniket@techonsy.com';
         
         const msg = {
-            to: recipientEmail, // Now using the patient's email
-            from: senderEmail, // Using environment variable for sender email
+            to: recipientEmail, // Using patient's email from database
+            from: senderEmail,
             subject: `Form ${formName} filled for patient ID: ${id}`,
-            text: `Patient Name: ${name}\n\n${formData.map(field => `${field.label}: ${field.value}`).join("\n")}`,
-            html: `<strong>Patient Name:</strong> ${name} <br><br>${formattedFormData}`
+            text: `Please find attached the completed form for patient: ${name} (ID: ${id})`,
+            html: `<p>Please find attached the completed form for patient: <strong>${name}</strong> (ID: ${id})</p>`
         };
+
+        // Add PDF attachment if available
+        if (pdfAttachment && pdfAttachment.content) {
+            // Extract the base64 data part (remove metadata prefix if present)
+            let base64Content = pdfAttachment.content;
+            if (base64Content.includes('base64,')) {
+                base64Content = base64Content.split('base64,')[1];
+            }
+            
+            msg.attachments = [
+                {
+                    content: base64Content,
+                    filename: pdfAttachment.filename || 'form.pdf',
+                    type: 'application/pdf',
+                    disposition: 'attachment'
+                }
+            ];
+        } else {
+            return res.status(400).json({ error: 'PDF attachment is required' });
+        }
 
         await sgMail.send(msg);
         res.status(200).json({ message: 'Email sent successfully' });
