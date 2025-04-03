@@ -1,5 +1,5 @@
 const express = require('express')
-const { getAllSubmittedForms, updateSubmittedForms, getSubmittedForms, createForm, saveResponse, getAllForms, updateForm, saveLinkToForm, deleteForm, getForm, getResponse, getAllResponse, deleteResponse} = require("./form.controller")
+const { getAllSubmittedForms, updateSubmittedForms, getSubmittedForms, createForm, saveResponse, getAllForms, updateForm, saveLinkToForm, deleteForm, getForm, getResponse, getAllResponse, deleteResponse,getFormVersions} = require("./form.controller")
 const router = express.Router();
 
 router.get('/submitted', getSubmittedForms)
@@ -15,4 +15,6 @@ router.get('/getformfields/:id', getForm);
 router.put('/savelinktoFormFields/:id',saveLinkToForm)
 router.delete('/deleteformfields/:id',deleteForm)
 router.delete('/deleteUserForm/:id',deleteResponse)
+// Add this to your routes
+router.get('/forms/:id/versions', getFormVersions);
 module.exports = router

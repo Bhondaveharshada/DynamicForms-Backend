@@ -11,6 +11,18 @@ const formFieldsSchema = mongoose.Schema(
     formId: {
       type: Number,
     },
+    version: {
+      type: String,
+      default: '1.0'
+    },
+    isLatest: {
+      type: Boolean,
+      default: true
+    },
+    parentForm: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'forms'
+    },
     
     additionalFields: [
       {

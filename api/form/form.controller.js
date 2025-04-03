@@ -2,30 +2,22 @@ const formModel = require('./form.model')
 const bcrypt = require('bcrypt')
 const mongoose = require('mongoose');
 
-
+// In createForm controller
 const createForm = async (req, res) => {
   try {
-    const {
-      formId,
-      data: { title, additionalFields },
-    } = req.body;
-    
-    // Log the data being received
-    console.log("Form Data:", JSON.stringify({ title, additionalFields }));
-
-    // No changes needed here as the frontend should send field IDs
-    const savedForm = await new formModel.formFields({
-      title,
-      formId,
-      additionalFields,
+    const form = await new formModel.formFields({
+      ...req.body.data,
+      version: '1.0',
+      isLatest: true
     }).save();
 
-    res
-      .status(201)
-      .json({ message: "Form saved successfully", result: savedForm });
+    // Wrap response in result object
+    res.status(201).json({ 
+      message: 'Form created successfully', 
+      result: form 
+    });
   } catch (error) {
-    console.error("Error saving form:", error);
-    res.status(500).json({ message: "Failed to save form" });
+    res.status(500).json({ error: error.message });
   }
 };
 
@@ -59,29 +51,66 @@ const getAllForms = async (req, res) => {
     res.status(500).json({ message: 'Failed to fetch forms' });
   }
 };
+// Add this to your form.controller.js
+const getFormVersions = async (req, res) => {
+  try {
+    const formId = req.params.id;
+    
+    // Find the original form
+    const originalForm = await formModel.formFields.findById(formId);
+    if (!originalForm) {
+      return res.status(404).json({ message: 'Form not found' });
+    }
+
+    // Find all versions of this form (including the original)
+    const versions = await formModel.formFields.find({
+      $or: [
+        { _id: originalForm._id },
+        { parentForm: originalForm._id },
+        { _id: originalForm.parentForm }
+      ]
+    }).sort({ version: -1 }); // Sort by version descending (newest first)
+
+    res.status(200).json({ result: versions });
+  } catch (error) {
+    console.error('Error fetching form versions:', error);
+    res.status(500).json({ message: 'Failed to fetch form versions' });
+  }
+};
 
 
 const updateForm = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { title, additionalFields } = req.body.data;
+    const originalForm = await formModel.formFields.findById(req.params.id);
+    const newVersion = incrementVersion(originalForm.version);
+    
+    const newForm = await new formModel.formFields({
+      ...originalForm.toObject(),
+      ...req.body.data,
+      _id: undefined,
+      version: newVersion,
+      parentForm: originalForm._id,
+      isLatest: true,
+      createdAt: Date.now()
+    }).save();
 
-    const updatedForm = await formModel.formFields.findByIdAndUpdate(
-      id, 
-      { $set: { title, additionalFields } },
-      { new: true }
-    );
-
-    if (!updatedForm) {
-      return res.status(404).json({ message: 'Form not found' });
-    }
-
-    res.status(200).json({ message: 'Form updated successfully', result: updatedForm });
-  } catch (error) {
-    console.error('Error updating form:', error);
-    res.status(500).json({ message: 'Failed to update form' });
-  }
+    await formModel.formFields.findByIdAndUpdate(originalForm._id, { isLatest: false });
+    
+   // Return wrapped response
+   res.status(200).json({ 
+    message: 'Form version updated successfully',
+    result: newForm 
+  });
+} catch (error) {
+  res.status(500).json({ error: error.message });
+}
 };
+
+function incrementVersion(version) {
+  const parts = version.split('.');
+  return `${parseInt(parts[0]) + 1}.0`; 
+  // return `${parts[0]}.${parseInt(parts[1]) + 1}`;
+}
 
 const saveLinkToForm = async (req, res) => {
   try {
@@ -319,5 +348,6 @@ module.exports = {
   deleteResponse,
   getSubmittedForms,
   updateSubmittedForms,
-  getAllSubmittedForms
+  getAllSubmittedForms,
+  getFormVersions
 }
