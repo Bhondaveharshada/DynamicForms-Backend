@@ -21,22 +21,34 @@ const createForm = async (req, res) => {
   }
 };
 
+// In form.controller.js
+// Get specific version by ID
+// In form.controller.js
 const getForm = async (req, res) => {
   try {
     const { id } = req.params;
-    const formFields = await formModel.formFields.findById(id);
 
-    if (!formFields) {
+    // Find the latest version of the form
+    const latestForm = await formModel.formFields.findOne({
+      $or: [
+        { _id: id, isLatest: true }, // Check if the requested ID is the latest
+        { parentForm: id, isLatest: true } // Find latest version under parentForm
+      ]
+    }).sort({ version: -1 }); // Ensure highest version is picked
+
+    if (!latestForm) {
       return res.status(404).json({ message: 'Form not found' });
     }
 
-    res.status(200).json({ message: 'Form fetched successfully', result: formFields });
+    res.status(200).json({ 
+      message: 'Form fetched successfully', 
+      result: latestForm 
+    });
   } catch (error) {
     console.error('Error fetching form:', error);
     res.status(500).json({ message: 'Failed to fetch form' });
   }
 };
-
 const getAllForms = async (req, res) => {
   try {
 
@@ -55,26 +67,16 @@ const getAllForms = async (req, res) => {
 const getFormVersions = async (req, res) => {
   try {
     const formId = req.params.id;
-    
-    // Find the original form
-    const originalForm = await formModel.formFields.findById(formId);
-    if (!originalForm) {
-      return res.status(404).json({ message: 'Form not found' });
-    }
-
-    // Find all versions of this form (including the original)
     const versions = await formModel.formFields.find({
       $or: [
-        { _id: originalForm._id },
-        { parentForm: originalForm._id },
-        { _id: originalForm.parentForm }
+        { _id: formId },
+        { parentForm: formId }
       ]
-    }).sort({ version: -1 }); // Sort by version descending (newest first)
+    }).sort({ version: -1 });
 
     res.status(200).json({ result: versions });
   } catch (error) {
-    console.error('Error fetching form versions:', error);
-    res.status(500).json({ message: 'Failed to fetch form versions' });
+    res.status(500).json({ error: error.message });
   }
 };
 
@@ -108,10 +110,8 @@ const updateForm = async (req, res) => {
 
 function incrementVersion(version) {
   const parts = version.split('.');
-  return `${parseInt(parts[0]) + 1}.0`; 
-  // return `${parts[0]}.${parseInt(parts[1]) + 1}`;
+  return `${parseInt(parts[0]) + 1}.0`;
 }
-
 const saveLinkToForm = async (req, res) => {
   try {
     const { id } = req.params;
